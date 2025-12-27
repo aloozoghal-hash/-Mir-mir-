@@ -16,7 +16,7 @@
         .stat-v { font-weight: bold; font-size: 14px; }
         #tm { color: var(--p); font-size: 18px; transition: 0.3s; }
         .penalty-text { color: #ff0000 !important; transform: scale(1.2); }
-        #grid { flex-grow: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(7, 1fr); gap: 4px; }
+        #grid { flex-grow: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(6, 1fr); gap: 4px; }
         .card { position: relative; cursor: pointer; perspective: 1000px; }
         .card-in { position: relative; width: 100%; height: 100%; transition: transform 0.4s; transform-style: preserve-3d; }
         .card.flip .card-in { transform: rotateY(180deg); }
@@ -48,10 +48,9 @@
 
 <script>
 (function() {
-    const locs = ['اشکفت سلمان','کولفرح','سوسن','دهدز','حافظ جنوبی','سلمان فارسی','حافظ شمالی','فلکه اصلی','فلکه علی','سرقنات','ایذه','بازارسبزی','منقل','کباب'];
+    const locs = ['اشکفت سلمان','کولفرح','سوسن','دهدز','حافظ جنوبی','سلمان فارسی','حافظ شمالی','فلکه اصلی','فلکه علی','سرقنات','ایذه','بازارسبزی'];
     let data=[], flipped=[], matched=0, score=1000, time=40, lock=true, timer, helpUsed=false;
 
-    // سیستم صوتی
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
         if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -59,14 +58,14 @@
         const gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination);
 
-        if(type === 'fire') { // صدای شبیه به جلز ولز آتش
+        if(type === 'fire') {
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(200, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.2);
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
             osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-        } else if(type === 'error') { // صدای جریمه
+        } else if(type === 'error') {
             osc.type = 'square';
             osc.frequency.setValueAtTime(100, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
@@ -152,7 +151,7 @@
             lock = true;
             if(flipped[0].txt === flipped[1].txt) {
                 matched++; score += 150;
-                playSound('fire'); // صدای جفت شدن (آتش)
+                playSound('fire');
                 flipped.forEach(f => f.el.classList.add('match'));
                 flipped = []; lock = false;
                 updateDisplay();
@@ -160,7 +159,7 @@
             } else {
                 time = Math.max(0, time - 3);
                 score = Math.max(0, score - 50);
-                playSound('error'); // صدای اشتباه
+                playSound('error');
                 const tmEl = document.getElementById('tm');
                 tmEl.classList.add('penalty-text');
                 updateDisplay();
