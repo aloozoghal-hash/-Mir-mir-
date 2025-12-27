@@ -1,52 +1,208 @@
-<div id="zoghal-game" oncontextmenu="return false;" style="direction:rtl; max-width:440px; margin:20px auto; background: radial-gradient(circle at center, #1a0000 0%, #050505 100%); border:3px solid #ff4d00; border-radius:30px; padding:15px; color:#fff; text-align:center; box-shadow:0 0 50px rgba(255,0,0,0.4); font-family:tahoma; position:relative; -webkit-user-select:none; user-select:none;">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>چالش الو ذغال</title>
+    <style>
+        :root {
+            --primary: #ff4d00;
+            --accent: #ffae00;
+            --success: #2ecc71;
+            --bg: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Tahoma', sans-serif;
+            overflow: hidden;
+        }
+
+        #zoghal-game {
+            width: 100vw;
+            height: 100vh;
+            max-width: 480px;
+            background: radial-gradient(circle at top, #220000 0%, #050505 100%);
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h3 {
+            color: var(--accent);
+            text-align: center;
+            margin: 5px 0;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(255, 77, 0, 0.5);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            align-items: center;
+        }
+
+        .stat-box { display: flex; flex-direction: column; align-items: center; }
+        .stat-label { font-size: 10px; color: #888; }
+        .stat-value { font-weight: bold; font-size: 16px; color: #fff; }
+        #tm { color: var(--primary); font-size: 22px; }
+
+        #grid {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 6px;
+            padding-bottom: 10px;
+        }
+
+        .card {
+            position: relative;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .card-front {
+            background: #fff;
+            color: #000;
+            transform: rotateY(180deg);
+            border: 2px solid var(--primary);
+            text-align: center;
+            padding: 2px;
+            z-index: 2;
+        }
+
+        /* --- افکت جفت شدن اصلاح شده --- */
+        .card.matched .card-front {
+            border-color: var(--success) !important;
+            background-color: #f0fff4 !important; /* پس زمینه بسیار روشن سبز برای خوانایی متن */
+            animation: match-pulse 0.8s ease-in-out infinite alternate;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+            color: #000 !important; /* تضمین خوانایی متن */
+        }
+
+        @keyframes match-pulse {
+            from { transform: rotateY(180deg) scale(1); box-shadow: 0 0 10px var(--success); }
+            to { transform: rotateY(180deg) scale(1.05); box-shadow: 0 0 20px var(--accent); }
+        }
+
+        .penalty-flash { animation: flash-red 0.4s; }
+        @keyframes flash-red { 0%, 100% { background: transparent; } 50% { background: rgba(255, 0, 0, 0.4); } }
+
+        #win-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+        .btn-wa { background: #25D366; }
+    </style>
+</head>
+<body>
+
+<div id="zoghal-game">
+    <h3>🔥 چالش بزرگ الو ذغال[جایزه ۳ کیسه ذغال] 🔥</h3>
     
-    <h3 style="color:#ffae00; margin-bottom:10px; font-size:14px; text-shadow:0 0 15px #ff4d00;">🔥 آسونه حلش کن  (جایزه: ۲ کیسه ذغال) 🔥</h3>
-    
-    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:12px; background:rgba(255,0,0,0.1); padding:10px; border-radius:15px; border:1px solid rgba(255,77,0,0.4);">
-        <span>زمان: <b id="tm" style="color:#ff4d00; font-size:20px;">40</b></span>
-        <span id="game-status" style="color:#ffae00; font-weight:bold;"> اول اسکرین شات بگیره😉 </span>
-        <span>امتیاز: <b id="sc" style="color:#e2b04a">1000</b></span>
+    <div class="stats-bar">
+        <div class="stat-box">
+            <span class="stat-label">زمان</span>
+            <span id="tm" class="stat-value">40</span>
+        </div>
+        <div class="stat-box">
+            <span id="game-status" style="color: var(--accent); font-size: 10px;">اول اسکرین‌بگیر 😉</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">امتیاز</span>
+            <span id="sc" class="stat-value">1000</span>
+        </div>
     </div>
 
-    <div id="grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;"></div>
+    <div id="grid"></div>
 
-    <div id="win-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.97); z-index:200; flex-direction:column; align-items:center; justify-content:center; padding:20px; border-radius:25px;">
-        <div id="win-msg" style="font-weight:900; font-size:16px; line-height:1.8; margin-bottom:15px;"></div>
-        <div id="reward-area" style="display:none; width:100%;">
-            <a id="wa-share" href="#" target="_blank" style="display:block; background:#25D366; color:#fff; text-decoration:none; padding:12px; border-radius:15px; font-weight:bold;">📱 دریافت جایزه از واتس‌اپ</a>
+    <div id="win-overlay">
+        <div id="win-msg" style="font-size: 18px; color: white; margin-bottom: 20px;"></div>
+        <div id="reward-area" style="display:none;">
+            <a id="wa-share" href="#" target="_blank" class="btn btn-wa">📱 دریافت ۲ کیسه ذغال</a>
         </div>
-        <button onclick="initGame()" style="margin-top:15px; background:#ff4d00; color:#fff; border:none; padding:10px 25px; border-radius:50px; cursor:pointer; font-weight:bold;">دوباره شانس تو امتحان کن 🔄</button>
+        <button onclick="initGame()" class="btn">تلاش دوباره 🔄</button>
     </div>
 </div>
-
-<style>
-    .card { height:55px; cursor:pointer; perspective: 1000px; }
-    .card-inner { position:relative; width:100%; height:100%; transition: transform 0.4s; transform-style: preserve-3d; pointer-events: none; }
-    .card.flipped .card-inner { transform: rotateY(180deg); }
-    .card-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:bold; border-radius:8px; border:1px solid #333; padding:2px; overflow:hidden; }
-    .card-back { background: #1a1a1a; color:#ff4d00; font-size:16px; }
-    .card-front { background:#fff; transform:rotateY(180deg); color:#000; border: 2px solid #ff4d00; text-align:center; line-height:1; }
-    .fire-match { animation: fire-glow 0.8s ease-out; border: 2px solid #ff4d00 !important; box-shadow: 0 0 20px #ffae00 inset !important; }
-    @keyframes fire-glow { 0%{transform:scale(1);} 50%{transform:scale(1.15);box-shadow:0 0 30px #ff4d00;} 100%{transform:scale(1);} }
-    .penalty-flash { animation: flash-red 0.5s; }
-    @keyframes flash-red { 0% {background:transparent;} 50% {background:rgba(255,0,0,0.4);} 100% {background:transparent;} }
-    .shake { animation: s 0.3s; }
-    @keyframes s { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-</style>
 
 <script>
 (function() {
     const locations = ['اشکفت سلمان','کولفرح','سوسن','دهدز','حافظ جنوبی','سلمان فارسی','حافظ شمالی','فلکه اصلی','فلکه علی','سرقنات','ایذه','بازارسبزی','منقل','کباب','کبریت','ذغال'];
-    let gameData=[], flipped=[], matched=0, score=1000, time=40, lock=true, timer, musicInterval;
+    let gameData=[], flipped=[], matchedCount=0, score=1000, time=40, lock=true, timer, musicInterval;
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
     function playSnd(f, d, type='triangle', v=0.5) {
         if(audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+        osc.type = type; osc.frequency.setValueAtTime(f, audioCtx.currentTime);
         gain.gain.setValueAtTime(v, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d);
         osc.connect(gain); gain.connect(audioCtx.destination);
@@ -56,36 +212,28 @@
     function startPanicMusic() {
         if(musicInterval) clearTimeout(musicInterval);
         const playTick = () => {
-            // ملودی استرس قوی‌تر (دو ضربه‌ای تهاجمی)
-            playSnd(90, 0.2, 'square', 0.7); 
-            setTimeout(() => playSnd(140, 0.1, 'sawtooth', 0.3), 150); 
-            
-            // سرعت ملودی با گذشت زمان وحشتناک می‌شود
-            let tempo = time > 25 ? 900 : (time > 10 ? 450 : 200); 
-            if(time > 0 && matched < locations.length) {
-                musicInterval = setTimeout(playTick, tempo);
-            }
+            playSnd(90, 0.1, 'sine', 0.6);
+            let tempo = time > 20 ? 1000 : (time > 10 ? 500 : 250);
+            if(time > 0 && matchedCount < locations.length) musicInterval = setTimeout(playTick, tempo);
         };
         playTick();
     }
 
     window.initGame = () => {
-        clearInterval(timer);
-        clearTimeout(musicInterval);
-        score=1000; time=40; matched=0; flipped=[]; lock=true;
+        clearInterval(timer); clearTimeout(musicInterval);
+        score=1000; time=40; matchedCount=0; flipped=[]; lock=true;
         document.getElementById('win-overlay').style.display = 'none';
         document.getElementById('reward-area').style.display = 'none';
         
-        let fullList = [...locations, ...locations];
-        fullList.sort(() => Math.random() - 0.5);
+        let fullList = [...locations, ...locations].sort(() => Math.random() - 0.5);
         gameData = fullList;
 
         const grid = document.getElementById('grid');
-        grid.innerHTML = gameData.map((_, i) => `
+        grid.innerHTML = gameData.map((text, i) => `
             <div class="card flipped" id="c-${i}" onclick="flip(this,${i})">
                 <div class="card-inner">
                     <div class="card-face card-back">؟</div>
-                    <div class="card-face card-front">${gameData[i]}</div>
+                    <div class="card-face card-front">${text}</div>
                 </div>
             </div>`).join('');
 
@@ -94,65 +242,74 @@
                 c.classList.remove('flipped');
                 c.querySelector('.card-inner').style.pointerEvents = 'auto';
             });
-            lock = false;
-            startTimer();
-            startPanicMusic();
-        }, 1500);
+            lock = false; startTimer(); startPanicMusic();
+            document.getElementById('game-status').innerText = "شروع!";
+        }, 1800);
     };
 
     function startTimer() {
-        timer = setInterval(() => { 
-            time--; 
-            if(time <= 0) { time=0; end(false); }
+        timer = setInterval(() => {
+            time--;
             document.getElementById('tm').innerText = time;
             document.getElementById('sc').innerText = score;
+            if(time <= 0) end(false);
         }, 1000);
     }
 
     window.flip = (el, idx) => {
-        if(lock || el.classList.contains('flipped') || flipped.some(f => f.el === el)) return;
+        if(lock || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+        
         el.classList.add('flipped');
         flipped.push({el, e: gameData[idx]});
         
         if(flipped.length === 2) {
             lock = true;
             if(flipped[0].e === flipped[1].e) {
-                matched++; score += 150;
-                playSnd(250, 0.7, 'sawtooth', 0.2); // صدای موفقیت (شعله)
-                flipped.forEach(f => f.el.querySelector('.card-front').classList.add('fire-match'));
-                flipped=[]; lock=false;
-                if(matched === locations.length) end(true);
+                // افکت پیروزی برای کارتها
+                const card1 = flipped[0].el;
+                const card2 = flipped[1].el;
+                
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    playSnd(400, 0.5, 'sine', 0.2);
+                    matchedCount++;
+                    score += 150;
+                    flipped = [];
+                    lock = false;
+                    if(matchedCount === locations.length) end(true);
+                }, 300);
             } else {
                 score = Math.max(0, score - 100);
-                time = Math.max(0, time - 3); // جریمه سنگین ۳ ثانیه‌ای
-                document.getElementById('zoghal-game').classList.add('penalty-flash');
-                setTimeout(() => document.getElementById('zoghal-game').classList.remove('penalty-flash'), 500);
-                playSnd(40, 0.5, 'square', 0.3); // صدای خطای ترسناک
+                time = Math.max(0, time - 3);
+                playSnd(60, 0.3, 'square', 0.2);
+                document.body.classList.add('penalty-flash');
+                setTimeout(() => document.body.classList.remove('penalty-flash'), 400);
+                
                 setTimeout(() => {
-                    flipped.forEach(f => f.el.classList.add('shake'));
-                    setTimeout(() => {
-                        flipped.forEach(f => f.el.classList.remove('flipped','shake'));
-                        flipped=[]; lock=false;
-                    }, 350);
-                }, 400);
+                    flipped.forEach(f => f.el.classList.remove('flipped'));
+                    flipped = [];
+                    lock = false;
+                }, 800);
             }
         }
     };
 
-    const end = (win) => {
-        clearInterval(timer);
-        clearTimeout(musicInterval);
+    function end(win) {
+        clearInterval(timer); clearTimeout(musicInterval);
         document.getElementById('win-overlay').style.display = 'flex';
         if(win) {
-            document.getElementById('win-msg').innerHTML = "🏆 شاهکار کردی! ایذه بهت افتخار می‌کنه.<br>امتیاز نهایی: " + score;
+            document.getElementById('win-msg').innerHTML = "🥇 ماشالا نابغه!<br>امتیاز: " + score;
             document.getElementById('reward-area').style.display = 'block';
-            const txt = encodeURIComponent(`سلام! من چالش فوق‌سخت ۳۲ کارتی رو بردم. جایزه ۲ کیسه ذغال من رو بفرستید! 🔥`);
+            const txt = encodeURIComponent(`سلام! من چالش ۳۲ کارتی الو ذغال رو بردم. امتیاز: ${score} 🔥`);
             document.getElementById('wa-share').href = `https://wa.me/989220730628?text=${txt}`;
         } else {
-            document.getElementById('win-msg').innerText = "اشتباهاتت زیاد بود و وقتت تموم شد!. 🍢";
+            document.getElementById('win-msg').innerHTML = "❌ وقت تموم شد!<br>دوباره شانس‌ت رو امتحان کن.";
         }
-    };
+    }
 
     initGame();
 })();
 </script>
+</body>
+</html>
