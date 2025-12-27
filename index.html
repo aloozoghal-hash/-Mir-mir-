@@ -28,6 +28,29 @@
 
         h3 { color: var(--accent); text-align: center; margin: 5px 0; font-size: 16px; }
 
+        /* استایل اختصاصی لینک جایگزین */
+        .skip-link {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255, 77, 0, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            padding: 8px;
+            margin: 5px auto 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            width: 90%;
+            animation: pulse-link 2s infinite;
+            transition: 0.3s;
+        }
+
+        @keyframes pulse-link {
+            0%, 100% { border-color: rgba(255, 255, 255, 0.3); transform: scale(1); background: rgba(255, 77, 0, 0.1); }
+            50% { border-color: var(--primary); transform: scale(1.02); background: rgba(255, 77, 0, 0.25); }
+        }
+
         .stats-bar {
             display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
             margin-bottom: 10px; background: rgba(255, 255, 255, 0.05);
@@ -43,7 +66,7 @@
             flex-grow: 1;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(7, 1fr); /* یک ردیف کم شد */
+            grid-template-rows: repeat(7, 1fr);
             gap: 6px;
             padding-bottom: 10px;
         }
@@ -87,7 +110,11 @@
 <body>
 
 <div id="zoghal-game">
-    <h3>🔥 چالش ۲۸ کارتی الو ذغال 🔥</h3>
+    <h3>🔥 چالش  الو ذغال با ۳ کیسه جایزه🔥</h3>
+    
+    <a href="https://aloozoghal-hash.github.io/alozoghal/" class="skip-link">
+        🤚نَترم سخته ولش کن یام ذغال اِسونم🤚
+    </a>
     
     <div class="stats-bar">
         <div class="stat-box"><span class="stat-label">زمان</span><span id="tm" class="stat-value">40</span></div>
@@ -108,7 +135,6 @@
 
 <script>
 (function() {
-    // تعداد کلمات به 14 کاهش یافت تا در مجموع 28 کارت داشته باشیم (7 ردیف 4 تایی)
     const locations = ['اشکفت سلمان','کولفرح','سوسن','دهدز','حافظ جنوبی','سلمان فارسی','حافظ شمالی','فلکه اصلی','فلکه علی','سرقنات','ایذه','بازارسبزی','منقل','کباب'];
     let gameData=[], flipped=[], matchedCount=0, score=1000, time=40, lock=true, timer, musicInterval;
     let audioStarted = false;
