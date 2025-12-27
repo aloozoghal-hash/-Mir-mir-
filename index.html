@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>چالش الو ذغال</title>
     <style>
-        :root { --p: #ff4d00; --a: #ffae00; --s: #2ecc71; }
+        :root { --p: #ff4d00; --a: #ffae00; --s: #2ecc71; --glow: #39ff14; }
         body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Tahoma; overflow: hidden; user-select: none; }
         #game { width: 100vw; height: 100vh; max-width: 450px; background: radial-gradient(circle at top, #220000 0%, #050505 100%); display: flex; flex-direction: column; padding: 10px; box-sizing: border-box; }
         h3 { color: var(--a); text-align: center; margin: 2px 0; font-size: 14px; }
@@ -14,16 +14,31 @@
         .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.05); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,77,0,0.2); }
         .stat-box { display: flex; flex-direction: column; align-items: center; color: #fff; }
         .stat-v { font-weight: bold; font-size: 14px; }
-        #tm { color: var(--p); font-size: 18px; transition: 0.3s; }
-        .penalty-text { color: #ff0000 !important; transform: scale(1.2); }
-        #grid { flex-grow: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(6, 1fr); gap: 4px; }
+        #tm { color: var(--p); font-size: 18px; transition: 0.2s; }
+        .penalty-text { color: #ff0000 !important; transform: scale(1.4); text-shadow: 0 0 15px red; }
+        #grid { flex-grow: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 6px; }
         .card { position: relative; cursor: pointer; perspective: 1000px; }
-        .card-in { position: relative; width: 100%; height: 100%; transition: transform 0.4s; transform-style: preserve-3d; }
+        .card-in { position: relative; width: 100%; height: 100%; transition: transform 0.3s; transform-style: preserve-3d; }
         .card.flip .card-in { transform: rotateY(180deg); }
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 9px; font-weight: bold; border: 1px solid rgba(255,255,255,0.1); }
-        .back { background: #1a1a1a; color: var(--p); font-size: 14px; }
-        .front { background: #fff; color: #000; transform: rotateY(180deg); border: 1px solid var(--p); text-align: center; padding: 2px; }
-        .match .front { background: var(--s)!important; color: white; border-color: #fff; box-shadow: 0 0 15px var(--p); }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid rgba(255,255,255,0.1); }
+        .back { background: #1a1a1a; color: var(--p); font-size: 16px; }
+        .front { background: #fff; color: #000; transform: rotateY(180deg); border: 1px solid var(--p); text-align: center; padding: 2px; transition: background 0.3s, box-shadow 0.3s; }
+        
+        /* افکت سبز شدن کامل و درخشش (Glow) */
+        .match .front { 
+            background: var(--s) !important; 
+            color: #fff !important; 
+            border-color: var(--glow);
+            box-shadow: 0 0 25px var(--glow); 
+            animation: successGlow 0.6s ease-out;
+        }
+
+        @keyframes successGlow {
+            0% { transform: rotateY(180deg) scale(1); box-shadow: 0 0 5px var(--glow); }
+            50% { transform: rotateY(180deg) scale(1.15); box-shadow: 0 0 40px var(--glow); }
+            100% { transform: rotateY(180deg) scale(1); box-shadow: 0 0 25px var(--glow); }
+        }
+
         #ov { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 10; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .btn { background: var(--p); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin-top: 10px; text-decoration: none; cursor: pointer; }
     </style>
@@ -31,10 +46,10 @@
 <body>
 
 <div id="game">
-    <h3>🔥 چالش الو ذغال با ۳ کیسه جایزه 🔥</h3>
+    <h3>🔥 چالش الو ذغال  با ۳ کیسه جایزه🔥</h3>
     <a href="https://aloozoghal-hash.github.io/alozoghal/" class="skip">🤚نَترم سخته ولش کن یام ذغال اِسونم🤚</a>
     <div class="stats">
-        <div class="stat-box"><span style="font-size:9px">زمان</span><span id="tm" class="stat-v">40</span></div>
+        <div class="stat-box"><span style="font-size:9px">زمان</span><span id="tm" class="stat-v">30</span></div>
         <div id="msg" style="color:var(--a); font-size:10px; align-self:center;">آماده؟</div>
         <div class="stat-box"><span style="font-size:9px">امتیاز</span><span id="sc" class="stat-v">1000</span></div>
     </div>
@@ -42,14 +57,14 @@
     <div id="ov">
         <h2 id="final-msg"></h2>
         <div id="reward" style="display:none"><a id="wa" href="#" target="_blank" class="btn" style="background:#25D366">📱 دریافت جایزه</a></div>
-        <button onclick="init()" class="btn">دوباره (چیدمان جدید) 🔄</button>
+        <button onclick="init()" class="btn">دوباره 🔄</button>
     </div>
 </div>
 
 <script>
 (function() {
-    const locs = ['اشکفت سلمان','کولفرح','سوسن','دهدز','حافظ جنوبی','سلمان فارسی','حافظ شمالی','فلکه اصلی','فلکه علی','سرقنات','ایذه','بازارسبزی'];
-    let data=[], flipped=[], matched=0, score=1000, time=40, lock=true, timer, helpUsed=false;
+    const locs = ['اشکفت سلمان','کولفرح','سوسن','دهدز','حافظ جنوبی','فلکه اصلی','سرقنات','ایذه'];
+    let data=[], flipped=[], matched=0, score=1000, time=30, lock=true, timer;
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
@@ -58,36 +73,35 @@
         const gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination);
 
-        if(type === 'fire') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+        if(type === 'match') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
         } else if(type === 'error') {
             osc.type = 'square';
             osc.frequency.setValueAtTime(100, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-        } else if(type === 'win') {
-            osc.type = 'sine';
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        } else if(type === 'flip') {
+            osc.type = 'triangle';
             osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.5);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
         }
     }
 
     window.init = () => {
         clearInterval(timer);
-        matched=0; score=1000; time=40; flipped=[]; lock=true; helpUsed=false;
+        matched=0; score=1000; time=30; flipped=[]; lock=true;
         document.getElementById('tm').innerText = time;
         document.getElementById('sc').innerText = score;
         document.getElementById('ov').style.display = 'none';
-        document.getElementById('msg').innerText = "حفظ کن!";
+        document.getElementById('msg').innerText = "حفظ کن...";
         
         data = [...locs, ...locs].sort(() => Math.random() - 0.5);
         const grid = document.getElementById('grid');
@@ -103,14 +117,13 @@
             document.querySelectorAll('.card').forEach(c => c.classList.remove('flip'));
             lock = false; startTimer();
             document.getElementById('msg').innerText = "شروع!";
-        }, 1000);
+        }, 800);
     };
 
     function startTimer() {
         timer = setInterval(() => {
             time--;
             updateDisplay();
-            if(time === 15 && !helpUsed) showHelp();
             if(time <= 0) end(false);
         }, 1000);
     }
@@ -120,30 +133,9 @@
         document.getElementById('sc').innerText = score;
     }
 
-    function showHelp() {
-        helpUsed = true;
-        document.getElementById('msg').innerText = "۴ جفت رو شد! 🔥";
-        let targets = [];
-        let revealedWords = 0;
-        for(let word of locs) {
-            let indices = data.map((v, i) => v === word ? i : -1).filter(i => i !== -1);
-            if(!document.getElementById(`card-${indices[0]}`).classList.contains('match')) {
-                targets.push(...indices); revealedWords++;
-                if(revealedWords === 4) break;
-            }
-        }
-        targets.forEach(idx => document.getElementById(`card-${idx}`).classList.add('flip'));
-        setTimeout(() => {
-            targets.forEach(idx => {
-                let c = document.getElementById(`card-${idx}`);
-                if(!c.classList.contains('match')) c.classList.remove('flip');
-            });
-            document.getElementById('msg').innerText = "سریع باش!";
-        }, 1500);
-    }
-
     window.flip = (el, i) => {
         if(lock || el.classList.contains('flip') || el.classList.contains('match')) return;
+        playSound('flip');
         el.classList.add('flip');
         flipped.push({el, txt: data[i]});
         
@@ -151,14 +143,14 @@
             lock = true;
             if(flipped[0].txt === flipped[1].txt) {
                 matched++; score += 150;
-                playSound('fire');
+                playSound('match');
                 flipped.forEach(f => f.el.classList.add('match'));
                 flipped = []; lock = false;
                 updateDisplay();
                 if(matched === locs.length) end(true);
             } else {
-                time = Math.max(0, time - 3);
-                score = Math.max(0, score - 50);
+                time = Math.max(0, time - 4);
+                score = Math.max(0, score - 80);
                 playSound('error');
                 const tmEl = document.getElementById('tm');
                 tmEl.classList.add('penalty-text');
@@ -167,14 +159,13 @@
                     flipped.forEach(f => f.el.classList.remove('flip'));
                     flipped = []; lock = false;
                     tmEl.classList.remove('penalty-text');
-                }, 500);
+                }, 400);
             }
         }
     };
 
     function end(win) {
         clearInterval(timer);
-        if(win) playSound('win');
         document.getElementById('ov').style.display = 'flex';
         document.getElementById('final-msg').innerText = win ? "🏆 برنده شدی!" : "⌛ زمان تمام شد";
         if(win) {
